@@ -1,0 +1,7 @@
+#Ignore obj/ & bin/
+bin/
+obj/
+*.user
+*.suo
+*.orig
+*.cachefile
