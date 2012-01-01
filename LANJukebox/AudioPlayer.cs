@@ -6,11 +6,16 @@ using Un4seen.Bass;
 
 namespace LANJukebox
 {
+    public delegate void TrackEnded();
+
     class AudioPlayer
     {
         int currentHandle = 0;
         Song currentSong = null;
         bool playing = false;
+        SYNCPROC endTrack;
+
+        public event TrackEnded TrackEnd;
 
         public AudioDevice CurrentDevice
         {
@@ -45,6 +50,7 @@ namespace LANJukebox
 
         public AudioPlayer()
         {
+            endTrack = new SYNCPROC(EndTrackProc);
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero);
         }
 
@@ -57,6 +63,7 @@ namespace LANJukebox
         {
             Stop();
             currentSong = song;
+            
         }
 
         public void Stop()
@@ -68,6 +75,11 @@ namespace LANJukebox
                 Bass.BASS_StreamFree(currentHandle);
                 currentHandle = 0;
             }
+        }
+
+        public void EndTrackProc(int arg1, int arg2, int arg3, IntPtr arg4)
+        {
+            TrackEnd();
         }
 
         public void SetVolume(int volume)
@@ -107,6 +119,7 @@ namespace LANJukebox
                 if (currentHandle == 0)
                 {
                     currentHandle = Bass.BASS_StreamCreateFile(currentSong.Tags.filename, 0, 0, BASSFlag.BASS_DEFAULT);
+                    Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_END, 0, endTrack, IntPtr.Zero);
                 }
                 Bass.BASS_ChannelPlay(currentHandle, false);
                 playing = true;

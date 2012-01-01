@@ -16,7 +16,6 @@ namespace LANJukebox
         public event FileUploaded NewSong;
 
         private string tempDir;
-        private volatile int fileNumber = 0;
 
         public HttpServer(string dir)
         {
@@ -111,8 +110,12 @@ namespace LANJukebox
         {
             if (context.Request.ContentLength64 < 1000000000)
             {
-                //string fileName = "song" + (fileNumber++).ToString() + ".mp3";
-                string fileName = Path.Combine(tempDir, Path.GetRandomFileName());
+                string fileName;
+                do
+                {
+                    fileName = Path.Combine(tempDir, Path.GetRandomFileName());
+                } while (File.Exists(fileName));
+
                 try
                 {
                     SaveFile(context.Request.ContentEncoding, GetBoundary(context.Request.ContentType), context.Request.InputStream, fileName);

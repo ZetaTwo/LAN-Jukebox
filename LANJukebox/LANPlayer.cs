@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace LANJukebox
 {
@@ -27,9 +27,36 @@ namespace LANJukebox
         {
             InitializeComponent();
 
+            player.TrackEnd += new LANJukebox.TrackEnded(TrackEnded);
+
             server.NewSong += new FileUploaded(SongAdded);
             server.Start();
             toolStripStatusLabelStatus.Text = "Web interface running on port 3000.";
+        }
+
+        private void trackBarVolume_Scroll(object sender, EventArgs e)
+        {
+            Player.SetVolume(trackBarVolume.Value);
+        }
+
+        private void listViewTracks_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            //If a track i selected
+            if (listViewTracks.SelectedIndices.Count > 0)
+            {
+                //Enable the correct buttons
+                int index = listViewTracks.SelectedIndices[0];
+                toolStripButtonUp.Enabled = !FirstTrack(index);
+                toolStripButtonDown.Enabled = !LastTrack(index);
+                toolStripButtonDelete.Enabled = true;
+            }
+            else
+            {
+                toolStripButtonUp.Enabled = false;
+                toolStripButtonDown.Enabled = false;
+                toolStripButtonDelete.Enabled = false;
+            }
         }
 
         private void SongAdded(string fileName)
@@ -72,6 +99,22 @@ namespace LANJukebox
             }
         }
 
+        delegate void TrackEndedHandler();
+        private void TrackEnded()
+        {
+            if (currentTrack.ListView.InvokeRequired)
+            {
+                Invoke(new TrackEndedHandler(TrackEnded));
+                return;
+            }
+
+            Player.Stop();
+            if (!LastTrack(currentTrack.Index))
+            {
+                PlaySong(currentTrack.ListView.Items[currentTrack.Index + 1]);
+            }
+        }
+        
         private void PlaySong(ListViewItem track)
         {
             if (currentTrack != null)
@@ -92,60 +135,12 @@ namespace LANJukebox
             UpdatePlayerButtons();
         }
 
-        private void listViewTracks_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-            //If a track i selected
-            if (listViewTracks.SelectedIndices.Count > 0)
-            {
-                //Enable the correct buttons
-                int index = listViewTracks.SelectedIndices[0];
-                toolStripButtonUp.Enabled = (index != 0);
-                toolStripButtonDown.Enabled = (index != listViewTracks.Items.Count - 1);
-                toolStripButtonDelete.Enabled = true;
-            }
-            else
-            {
-                toolStripButtonUp.Enabled = false;
-                toolStripButtonDown.Enabled = false;
-                toolStripButtonDelete.Enabled = false;
-            }
-        }
-
-        private void toolStripButtonUp_Click(object sender, EventArgs e)
-        {
-            int index = listViewTracks.SelectedIndices[0];
-            MoveTrackTo(index, index - 1);
-        }
-
-        private void toolStripButtonDown_Click(object sender, EventArgs e)
-        {
-            int index = listViewTracks.SelectedIndices[0];
-            MoveTrackTo(index, index + 1);
-        }
-
-        private void toolStripButtonDelete_Click(object sender, EventArgs e)
-        {
-            int index = listViewTracks.SelectedIndices[0];
-            DeleteTrack(index);
-            UpdatePlayerButtons();
-        }
-
-        private void MoveTrackTo(int from, int to)
-        {
-            ListViewItem track = listViewTracks.Items[from];
-            listViewTracks.Items.RemoveAt(from);
-            listViewTracks.Items.Insert(to, track);
-
-            UpdatePlayerButtons();
-        }
-
         private void UpdatePlayerButtons()
         {
             if (currentTrack != null)
             {
-                toolStripButtonNext.Enabled = (currentTrack.Index != listViewTracks.Items.Count - 1);
-                toolStripButtonPrev.Enabled = (currentTrack.Index != 0);
+                toolStripButtonNext.Enabled = !LastTrack(currentTrack.Index);
+                toolStripButtonPrev.Enabled = !FirstTrack(currentTrack.Index);
                 toolStripButtonPlayPause.Enabled = true;
             }
             else
@@ -156,47 +151,13 @@ namespace LANJukebox
             }
         }
 
-        private void toolStripButtonPlayPause_Click(object sender, EventArgs e)
+        private void MoveTrackTo(int from, int to)
         {
-            Player.PlayPause();
-        }
+            ListViewItem track = listViewTracks.Items[from];
+            listViewTracks.Items.RemoveAt(from);
+            listViewTracks.Items.Insert(to, track);
 
-        private void toolStripButtonNext_Click(object sender, EventArgs e)
-        {
-            Player.Stop();
-            PlaySong(currentTrack.ListView.Items[currentTrack.Index + 1]);
-        }
-
-        private void toolStripButtonPrev_Click(object sender, EventArgs e)
-        {
-            Player.Stop();
-            PlaySong(currentTrack.ListView.Items[currentTrack.Index - 1]);
-        }
-
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
-        private void trackBarVolume_Scroll(object sender, EventArgs e)
-        {
-            Player.SetVolume(trackBarVolume.Value);
-        }
-
-        private void toolStripButtonWebInterface_Click(object sender, EventArgs e)
-        {
-            System.Diagnostics.Process.Start("http://127.0.0.1:3000");
-        }
-
-        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OptionsForm options = new OptionsForm(this);
-            DialogResult result = options.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                Player.CurrentDevice = options.Device;
-                historySize = options.HistorySize;
-            }
+            UpdatePlayerButtons();
         }
 
         private void DeleteTrack(int index)
@@ -230,6 +191,73 @@ namespace LANJukebox
                     listViewTracks.SelectedIndices.Add(index);
                 }
             }
+        }
+
+        private bool LastTrack(int index)
+        {
+            return (index == listViewTracks.Items.Count - 1);
+        }
+
+        private bool FirstTrack(int index)
+        {
+            return (index != 0);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OptionsForm options = new OptionsForm(this);
+            DialogResult result = options.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                Player.CurrentDevice = options.Device;
+                historySize = options.HistorySize;
+            }
+        }
+
+        private void toolStripButtonUp_Click(object sender, EventArgs e)
+        {
+            int index = listViewTracks.SelectedIndices[0];
+            MoveTrackTo(index, index - 1);
+        }
+
+        private void toolStripButtonDown_Click(object sender, EventArgs e)
+        {
+            int index = listViewTracks.SelectedIndices[0];
+            MoveTrackTo(index, index + 1);
+        }
+
+        private void toolStripButtonDelete_Click(object sender, EventArgs e)
+        {
+            int index = listViewTracks.SelectedIndices[0];
+            DeleteTrack(index);
+            UpdatePlayerButtons();
+        }
+
+        private void toolStripButtonPlayPause_Click(object sender, EventArgs e)
+        {
+            Player.PlayPause();
+        }
+
+        private void toolStripButtonNext_Click(object sender, EventArgs e)
+        {
+            Player.Stop();
+            PlaySong(currentTrack.ListView.Items[currentTrack.Index + 1]);
+        }
+
+        private void toolStripButtonPrev_Click(object sender, EventArgs e)
+        {
+            Player.Stop();
+            PlaySong(currentTrack.ListView.Items[currentTrack.Index - 1]);
+        }
+
+        private void toolStripButtonWebInterface_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://127.0.0.1:3000");
         }
     }
 }
