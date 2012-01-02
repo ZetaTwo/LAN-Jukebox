@@ -319,9 +319,10 @@
             this.Controls.Add(this.toolStrip);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStrip);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip;
             this.Name = "LANPlayer";
-            this.Text = "LAN Player";
+            this.Text = "LAN Player - Beta";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LANPlayer_FormClosing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();

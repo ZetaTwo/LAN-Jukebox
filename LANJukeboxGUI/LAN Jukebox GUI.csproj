@@ -11,7 +11,8 @@
     <RootNamespace>LANJukeboxGUI</RootNamespace>
     <AssemblyName>LANJukebox</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -43,6 +44,9 @@
     <Reference Include="Bass.Net, Version=2.4.7.4, Culture=neutral, PublicKeyToken=b7566c273e6ef480, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\dependencies\bass\Bass.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="EQATEC.Analytics.MonitorWinForm">
+      <HintPath>..\..\..\..\dependencies\EQATEC.Analytics.Monitor\EQATEC.Analytics.MonitorWinForm.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

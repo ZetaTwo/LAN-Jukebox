@@ -46,5 +46,17 @@ namespace LANJukeboxGUI.Properties {
                 this["HistorySize"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LastFmSession {
+            get {
+                return ((string)(this["LastFmSession"]));
+            }
+            set {
+                this["LastFmSession"] = value;
+            }
+        }
     }
 }

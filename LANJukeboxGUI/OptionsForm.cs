@@ -17,6 +17,12 @@ namespace LANJukeboxGUI
             get { return (uint)numericUpDownHistorySize.Value; }
         }
 
+        string lastFmSession;
+        public string LastFmSession
+        {
+            get { return lastFmSession; }
+        }
+
         public OptionsForm(LANPlayer _parent)
         {
             parent = _parent;
@@ -37,6 +43,12 @@ namespace LANJukeboxGUI
 
             //Set history size
             numericUpDownHistorySize.Value = parent.Player.HistorySize;
+
+            //Set Last.Fm auth
+            if (!string.IsNullOrWhiteSpace(parent.Player.LastFmSession))
+            {
+                buttonLastFm.Text = "Revoke";
+            }
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -51,7 +63,37 @@ namespace LANJukeboxGUI
 
         private void buttonLastFm_Click(object sender, EventArgs e)
         {
+            if (!string.IsNullOrWhiteSpace(parent.Player.LastFmSession))
+            {
+                parent.Player.RemoveLastFmAuth();
+                lastFmSession = null;
+                buttonLastFm.Text = "Authenticate";
+            }
+            else
+            {
+                System.Diagnostics.Process.Start(parent.Player.BeginLastFmAuth());
+                TryAuth();
+            }
+        }
 
+        private void TryAuth()
+        {
+            this.Enabled = false;
+            DialogResult authResult = MessageBox.Show("Have you authenticated with Last.Fm?", "Authenticate Last.fm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (authResult == DialogResult.Yes)
+            {
+                try
+                {
+                    lastFmSession = parent.Player.EndLastFmAuth();
+                    buttonLastFm.Text = "Revoke";
+                }
+                catch
+                {
+                    TryAuth();
+                }
+            }
+
+            this.Enabled = true;
         }
     }
 }

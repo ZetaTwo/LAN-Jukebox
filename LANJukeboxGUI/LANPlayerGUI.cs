@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using LANJukebox;
 using System.Drawing;
+using EQATEC.Analytics.Monitor;
 
 namespace LANJukeboxGUI
 {
@@ -13,13 +14,31 @@ namespace LANJukeboxGUI
             get { return player; }
         }
 
+        IAnalyticsMonitor monitor;
+
         public LANPlayer()
         {
             InitializeComponent();
 
-            player = new LANPlayerCore();
+#if !DEBUG
+            monitor = AnalyticsMonitorFactory.Create("3C33D1DC98B34193B7B7C99E484C4583");
+            AppDomain.CurrentDomain.UnhandledException += (s, exep) =>
+                monitor.TrackException(exep.ExceptionObject as Exception);
+            monitor.Start();
+#endif
+
+            string lastFmSession = Properties.Settings.Default.LastFmSession;
+            if (!string.IsNullOrWhiteSpace(lastFmSession))
+            {
+                player = new LANPlayerCore(lastFmSession);
+            }
+            else
+            {
+                player = new LANPlayerCore();
+            }
             Player.TrackAdd += new LANJukebox.TrackEvent(AddTrack);
-            Player.TrackPlay +=new TrackEvent(PlayTrack);
+            Player.TrackPlay += new TrackEvent(PlayTrack);
+            Player.TrackDelete += new TrackEvent(DeleteTrackHistory);
             Player.Audio.DeviceIndex = Properties.Settings.Default.AudioDevice;
             Player.HistorySize = Properties.Settings.Default.HistorySize;
             
@@ -111,6 +130,18 @@ namespace LANJukeboxGUI
             UpdatePlayerButtons();
         }
 
+        private void DeleteTrackHistory(Track track)
+        {
+            foreach (ListViewItem trackItem in listViewTracks.Items)
+            {
+                if (trackItem.Tag == track)
+                {
+                    trackItem.Remove();
+                    return;
+                }
+            }
+        }
+
         private void DeleteTrack(int index)
         {
             ListViewItem track = listViewTracks.Items[index];
@@ -163,6 +194,7 @@ namespace LANJukeboxGUI
                 //Save options
                 Properties.Settings.Default.AudioDevice = Player.Audio.DeviceIndex;
                 Properties.Settings.Default.HistorySize = Player.HistorySize;
+                Properties.Settings.Default.LastFmSession = options.LastFmSession;
                 Properties.Settings.Default.Save();
             }
         }
@@ -252,6 +284,9 @@ namespace LANJukeboxGUI
         private void LANPlayer_FormClosing(object sender, FormClosingEventArgs e)
         {
             Player.Audio.Stop();
+#if !DEBUG
+            monitor.Stop();
+#endif
         }
     }
 }

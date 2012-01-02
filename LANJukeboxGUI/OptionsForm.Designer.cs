@@ -60,6 +60,15 @@
             labelHistorySize.TabIndex = 5;
             labelHistorySize.Text = "History Size";
             // 
+            // labelLastFm
+            // 
+            labelLastFm.AutoSize = true;
+            labelLastFm.Location = new System.Drawing.Point(12, 73);
+            labelLastFm.Name = "labelLastFm";
+            labelLastFm.Size = new System.Drawing.Size(41, 13);
+            labelLastFm.TabIndex = 7;
+            labelLastFm.Text = "Last.fm";
+            // 
             // comboBoxDevices
             // 
             this.comboBoxDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -96,18 +105,8 @@
             this.numericUpDownHistorySize.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownHistorySize.TabIndex = 6;
             // 
-            // labelLastFm
-            // 
-            labelLastFm.AutoSize = true;
-            labelLastFm.Location = new System.Drawing.Point(12, 73);
-            labelLastFm.Name = "labelLastFm";
-            labelLastFm.Size = new System.Drawing.Size(41, 13);
-            labelLastFm.TabIndex = 7;
-            labelLastFm.Text = "Last.fm";
-            // 
             // buttonLastFm
             // 
-            this.buttonLastFm.Enabled = false;
             this.buttonLastFm.Location = new System.Drawing.Point(87, 68);
             this.buttonLastFm.Name = "buttonLastFm";
             this.buttonLastFm.Size = new System.Drawing.Size(89, 23);
