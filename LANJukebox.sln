@@ -1,18 +1,40 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LANJukebox", "LANJukebox\LANJukebox.csproj", "{073F7146-0938-4E0F-97A2-90C3CAEF7D63}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAN Jukebox GUI", "LANJukeboxGUI\LAN Jukebox GUI.csproj", "{073F7146-0938-4E0F-97A2-90C3CAEF7D63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LAN Jukebox", "LANJukebox\LAN Jukebox.csproj", "{F9AF068C-9EF3-4738-94E2-D130B7F3679C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Debug|x86.ActiveCfg = Debug|x86
 		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Debug|x86.Build.0 = Debug|x86
+		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Release|Any CPU.ActiveCfg = Release|x86
+		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Release|Mixed Platforms.Build.0 = Release|x86
 		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Release|x86.ActiveCfg = Release|x86
 		{073F7146-0938-4E0F-97A2-90C3CAEF7D63}.Release|x86.Build.0 = Release|x86
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{F9AF068C-9EF3-4738-94E2-D130B7F3679C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

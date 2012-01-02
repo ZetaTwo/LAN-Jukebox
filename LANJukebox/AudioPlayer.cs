@@ -1,36 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Un4seen.Bass;
 
 namespace LANJukebox
 {
-    public delegate void TrackEnded();
-
-    class AudioPlayer
+    public class AudioPlayer
     {
         int currentHandle = 0;
-        Song currentSong = null;
+        Track currentSong = null;
         bool playing = false;
-        SYNCPROC endTrack;
+        public bool Playing
+        {
+            get { return playing; }
+        }
 
-        public event TrackEnded TrackEnd;
+        public int Volume
+        {
+            get { return (int)(100 * Bass.BASS_GetVolume()); }
+            set { Bass.BASS_SetVolume((float)value / 100); }
+        }
+
+        public event TrackEvent TrackEnd;
+        public event TrackEvent TrackScrobble;
 
         public AudioDevice CurrentDevice
         {
             get
             {
-                int device_number = Bass.BASS_GetDevice();
+                int device_number = DeviceIndex;
                 BASS_DEVICEINFO device = Bass.BASS_GetDeviceInfo(device_number);
                 return new AudioDevice(device_number, device.name);
             }
+            set { DeviceIndex = value.Id; }
+        }
+
+        public int DeviceIndex
+        {
+            get { return Bass.BASS_GetDevice(); }
             set
             {
-                BASS_DEVICEINFO device = Bass.BASS_GetDeviceInfo(value.Id);
+                BASS_DEVICEINFO device = Bass.BASS_GetDeviceInfo(value);
                 if (device.IsEnabled && !device.IsInitialized)
                 {
-                    Bass.BASS_Init(value.Id, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero);
+                    Bass.BASS_Init(value, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero);
                 }
 
                 if (currentSong != null)
@@ -38,28 +50,27 @@ namespace LANJukebox
                     PlayPause();
                 }
 
-                bool result = Bass.BASS_SetDevice(value.Id);
+                bool result = Bass.BASS_SetDevice(value);
 
                 if (currentSong != null)
                 {
                     PlayPause();
                 }
-                
             }
         }
 
         public AudioPlayer()
         {
-            endTrack = new SYNCPROC(EndTrackProc);
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero);
         }
 
         ~AudioPlayer()
         {
+            Stop();
             Bass.BASS_Free();
         }
 
-        public void LoadSong(Song song)
+        public void LoadSong(Track song)
         {
             Stop();
             currentSong = song;
@@ -72,6 +83,10 @@ namespace LANJukebox
             {
                 playing = false;
                 Bass.BASS_ChannelStop(currentHandle);
+            }
+
+            if (currentHandle != 0)
+            {
                 Bass.BASS_StreamFree(currentHandle);
                 currentHandle = 0;
             }
@@ -79,12 +94,12 @@ namespace LANJukebox
 
         public void EndTrackProc(int arg1, int arg2, int arg3, IntPtr arg4)
         {
-            TrackEnd();
+            TrackEnd(currentSong);
         }
 
-        public void SetVolume(int volume)
+        public void ScrobbleTrackProc(int arg1, int arg2, int arg3, IntPtr arg4)
         {
-            Bass.BASS_SetVolume((float)volume / 100);
+            TrackScrobble(currentSong);
         }
 
         public AudioDevice[] GetDevices()
@@ -119,7 +134,10 @@ namespace LANJukebox
                 if (currentHandle == 0)
                 {
                     currentHandle = Bass.BASS_StreamCreateFile(currentSong.Tags.filename, 0, 0, BASSFlag.BASS_DEFAULT);
-                    Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_END, 0, endTrack, IntPtr.Zero);
+                    Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_END, 0, EndTrackProc, IntPtr.Zero);
+                    
+                    long scrobblePos = Bass.BASS_ChannelGetLength(currentHandle) / 2;
+                    Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_POS, scrobblePos, ScrobbleTrackProc, IntPtr.Zero);
                 }
                 Bass.BASS_ChannelPlay(currentHandle, false);
                 playing = true;

@@ -1,4 +1,4 @@
-﻿namespace LANJukebox
+﻿namespace LANJukeboxGUI
 {
     partial class LANPlayer
     {
@@ -28,37 +28,51 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+            System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LANPlayer));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.imageListToolStrip = new System.Windows.Forms.ImageList(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonPlayPause = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonPrev = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonNext = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonUp = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonDown = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonDelete = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripButtonWebInterface = new System.Windows.Forms.ToolStripButton();
             this.listViewTracks = new System.Windows.Forms.ListView();
             this.columnHeaderTitle = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderArtist = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderAlbum = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderLength = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.trackBarVolume = new System.Windows.Forms.TrackBar();
-            this.toolStripButtonWebInterface = new System.Windows.Forms.ToolStripButton();
-            this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarVolume)).BeginInit();
             this.SuspendLayout();
+            // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // toolStripSeparator2
+            // 
+            toolStripSeparator2.Name = "toolStripSeparator2";
+            toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
             // menuStrip
             // 
@@ -83,9 +97,24 @@
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // viewToolStripMenuItem
+            // 
+            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optionsToolStripMenuItem});
+            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
+            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.viewToolStripMenuItem.Text = "View";
+            // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.optionsToolStripMenuItem.Text = "Options";
+            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -100,6 +129,20 @@
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.aboutToolStripMenuItem.Text = "About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // imageListToolStrip
+            // 
+            this.imageListToolStrip.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageListToolStrip.ImageStream")));
+            this.imageListToolStrip.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListToolStrip.Images.SetKeyName(0, "Play");
+            this.imageListToolStrip.Images.SetKeyName(1, "Pause");
+            this.imageListToolStrip.Images.SetKeyName(2, "Prev");
+            this.imageListToolStrip.Images.SetKeyName(3, "Next");
+            this.imageListToolStrip.Images.SetKeyName(4, "Up");
+            this.imageListToolStrip.Images.SetKeyName(5, "Down");
+            this.imageListToolStrip.Images.SetKeyName(6, "Delete");
+            this.imageListToolStrip.Images.SetKeyName(7, "Add");
             // 
             // statusStrip
             // 
@@ -119,15 +162,16 @@
             // 
             // toolStrip
             // 
+            this.toolStrip.ImageList = this.imageListToolStrip;
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonPlayPause,
             this.toolStripButtonPrev,
             this.toolStripButtonNext,
-            this.toolStripSeparator1,
+            toolStripSeparator1,
             this.toolStripButtonUp,
             this.toolStripButtonDown,
             this.toolStripButtonDelete,
-            this.toolStripSeparator2,
+            toolStripSeparator2,
             this.toolStripButtonWebInterface});
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
@@ -143,7 +187,7 @@
             this.toolStripButtonPlayPause.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonPlayPause.Name = "toolStripButtonPlayPause";
             this.toolStripButtonPlayPause.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonPlayPause.Text = "Play/Pause";
+            this.toolStripButtonPlayPause.Text = "Pause";
             this.toolStripButtonPlayPause.Click += new System.EventHandler(this.toolStripButtonPlayPause_Click);
             // 
             // toolStripButtonPrev
@@ -167,11 +211,6 @@
             this.toolStripButtonNext.Size = new System.Drawing.Size(23, 22);
             this.toolStripButtonNext.Text = "Next";
             this.toolStripButtonNext.Click += new System.EventHandler(this.toolStripButtonNext_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
             // toolStripButtonUp
             // 
@@ -206,10 +245,15 @@
             this.toolStripButtonDelete.Text = "Delete";
             this.toolStripButtonDelete.Click += new System.EventHandler(this.toolStripButtonDelete_Click);
             // 
-            // toolStripSeparator2
+            // toolStripButtonWebInterface
             // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            this.toolStripButtonWebInterface.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripButtonWebInterface.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonWebInterface.Image")));
+            this.toolStripButtonWebInterface.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonWebInterface.Name = "toolStripButtonWebInterface";
+            this.toolStripButtonWebInterface.Size = new System.Drawing.Size(23, 22);
+            this.toolStripButtonWebInterface.Text = "Web Interface";
+            this.toolStripButtonWebInterface.Click += new System.EventHandler(this.toolStripButtonWebInterface_Click);
             // 
             // listViewTracks
             // 
@@ -265,31 +309,6 @@
             this.trackBarVolume.Value = 100;
             this.trackBarVolume.Scroll += new System.EventHandler(this.trackBarVolume_Scroll);
             // 
-            // toolStripButtonWebInterface
-            // 
-            this.toolStripButtonWebInterface.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonWebInterface.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonWebInterface.Image")));
-            this.toolStripButtonWebInterface.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButtonWebInterface.Name = "toolStripButtonWebInterface";
-            this.toolStripButtonWebInterface.Size = new System.Drawing.Size(23, 22);
-            this.toolStripButtonWebInterface.Text = "Web Interface";
-            this.toolStripButtonWebInterface.Click += new System.EventHandler(this.toolStripButtonWebInterface_Click);
-            // 
-            // viewToolStripMenuItem
-            // 
-            this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionsToolStripMenuItem});
-            this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
-            this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.viewToolStripMenuItem.Text = "View";
-            // 
-            // optionsToolStripMenuItem
-            // 
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.optionsToolStripMenuItem.Text = "Options";
-            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
-            // 
             // LANPlayer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -303,6 +322,7 @@
             this.MainMenuStrip = this.menuStrip;
             this.Name = "LANPlayer";
             this.Text = "LAN Player";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LANPlayer_FormClosing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.statusStrip.ResumeLayout(false);
@@ -332,16 +352,15 @@
         private System.Windows.Forms.ColumnHeader columnHeaderArtist;
         private System.Windows.Forms.ColumnHeader columnHeaderAlbum;
         private System.Windows.Forms.ColumnHeader columnHeaderLength;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripButton toolStripButtonUp;
         private System.Windows.Forms.ToolStripButton toolStripButtonDown;
         private System.Windows.Forms.ToolStripButton toolStripButtonDelete;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelStatus;
         private System.Windows.Forms.TrackBar trackBarVolume;
         private System.Windows.Forms.ToolStripButton toolStripButtonWebInterface;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ImageList imageListToolStrip;
     }
 }
 

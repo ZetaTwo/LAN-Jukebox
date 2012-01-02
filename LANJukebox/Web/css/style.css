@@ -3,11 +3,40 @@
     font-family: Verdana, Arial, Sans-Serif;
     margin: 0;
     padding: 0;
+    background-color: #66CCFF;
+}
+
+button
+{
+    background-color: #E6EFC2;
+    border: 1px solid #C6D880;
+    color: #529214;
+    padding: 4px 10px 4px 7px;
+    line-height: 17px;
+    border-top: 1px solid #EEE;
+    border-left: 1px solid #EEE;
+    cursor: pointer;
+    text-align: center;
+    margin: 0.7em 0.5em 0.7em 0;
+    font-family: "Lucida Grande", Tahoma, Arial, Verdana, sans-serif;
+    font-weight: bold;
 }
 
 #wrapper 
 {
-    margin: 0 auto;
-    padding: 0;
-    width: 950px;
+    margin: 20px auto;
+    width: 400px;
+    padding: 20px;
+    background-color: #FF6666;
+    border: 3px solid #000000;
+    border-radius: 10px;
+}
+
+.box 
+{
+    padding: 25px;
+    background-color: #FFCC66;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    margin-bottom: 10px;
 }

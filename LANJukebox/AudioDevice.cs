@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LANJukebox
 {
-    class AudioDevice
+    public class AudioDevice
     {
         int id;
         public int Id

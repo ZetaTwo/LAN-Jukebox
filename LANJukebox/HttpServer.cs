@@ -5,28 +5,19 @@ using System.Text;
 using System.Net;
 using System.IO;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace LANJukebox
 {
-    public delegate void FileUploaded(string file);
+    delegate void FileUploaded(TempFile file);
 
     class HttpServer
     {
         private HttpListener listener = new HttpListener();
         public event FileUploaded NewSong;
 
-        private string tempDir;
-
-        public HttpServer(string dir)
+        public HttpServer()
         {
-            tempDir = dir;
-
-            if (Directory.Exists(tempDir))
-            {
-                Directory.Delete(tempDir, true);
-            }
-
-            Directory.CreateDirectory(tempDir);
         }
 
         public void Start()
@@ -43,6 +34,7 @@ namespace LANJukebox
 
             string file = context.Request.RawUrl.Substring(1);
             string[] action = file.Split('/');
+            
             if (file == "") { file = "index.html"; };
             string filePath = "Web/" + file;
 
@@ -110,16 +102,12 @@ namespace LANJukebox
         {
             if (context.Request.ContentLength64 < 1000000000)
             {
-                string fileName;
-                do
-                {
-                    fileName = Path.Combine(tempDir, Path.GetRandomFileName());
-                } while (File.Exists(fileName));
+                TempFile tempFile = new TempFile();
 
                 try
                 {
-                    SaveFile(context.Request.ContentEncoding, GetBoundary(context.Request.ContentType), context.Request.InputStream, fileName);
-                    NewSong(fileName);
+                    SaveFile(context.Request.ContentEncoding, GetBoundary(context.Request.ContentType), context.Request.InputStream, tempFile.Path);
+                    NewSong(tempFile);
                 }
                 catch
                 {
@@ -138,14 +126,16 @@ namespace LANJukebox
 
         private void ServeFile(HttpListenerContext context, string filePath)
         {
-            if (File.Exists(filePath))
+            string resource = "LANJukebox." + filePath.Replace('/', '.');
+            Stream file = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource);
+            if (file != null)
             {
                 context.Response.ContentType = GetContentType(Path.GetExtension(filePath));
                 context.Response.ContentEncoding = System.Text.Encoding.UTF8;
 
                 Stream output = context.Response.OutputStream;
-
-                StreamReader index = File.OpenText(filePath);
+                
+                StreamReader index = new StreamReader(file);
                 byte[] buffer = System.Text.Encoding.UTF8.GetBytes(index.ReadToEnd());
                 index.Close();
 
@@ -200,7 +190,7 @@ namespace LANJukebox
                 Byte[] buffer = new Byte[1024];
                 Int32 len = input.Read(buffer, 0, 1024);
                 Int32 startPos = -1;
-      
+
                 // Find start boundary
                 while (true)
                 {
@@ -220,7 +210,7 @@ namespace LANJukebox
                         len = input.Read(buffer, boundaryLen, 1024 - boundaryLen);
                     }
                 }
-    
+
                 // Skip four lines (Boundary, Content-Disposition, Content-Type, and a blank)
                 for (Int32 i = 0; i < 4; i++)
                 {
@@ -243,44 +233,43 @@ namespace LANJukebox
                         }
                     }
                 }
-                
+
 
                 Array.Copy(buffer, startPos, buffer, 0, len - startPos);
                 len = len - startPos;
 
-                
-                    while (true)
+
+                while (true)
+                {
+                    Int32 endPos = IndexOf(buffer, len, boundaryBytes);
+                    if (endPos >= 0)
                     {
-                        Int32 endPos = IndexOf(buffer, len, boundaryBytes);
-                        if (endPos >= 0)
+                        if (endPos > 0) output.Write(buffer, 0, endPos);
+                        break;
+                    }
+                    else if (len <= boundaryLen)
+                    {
+                        throw new Exception("End Boundaray Not Found");
+                    }
+                    else
+                    {
+
+                        output.Write(buffer, 0, len - boundaryLen);
+                        Array.Copy(buffer, len - boundaryLen, buffer, 0, boundaryLen);
+
+                        try
                         {
-                            if (endPos > 0) output.Write(buffer, 0, endPos);
-                            break;
+                            len = input.Read(buffer, boundaryLen, 1024 - boundaryLen) + boundaryLen;
                         }
-                        else if (len <= boundaryLen)
+                        catch
                         {
-                            throw new Exception("End Boundaray Not Found");
-                        }
-                        else
-                        {
+                            //Input aborted, delete file
+                            output.Close();
 
-                            output.Write(buffer, 0, len - boundaryLen);
-                            Array.Copy(buffer, len - boundaryLen, buffer, 0, boundaryLen);
-
-                            try
-                            {
-                                len = input.Read(buffer, boundaryLen, 1024 - boundaryLen) + boundaryLen;
-                            }
-                            catch
-                            {
-                                //Input aborted, delete file
-                                output.Close();
-                                File.Delete(fileName);
-
-                                throw new Exception("Client aborted");
-                            }
+                            throw new Exception("Client aborted");
                         }
                     }
+                }
             }
         }
 

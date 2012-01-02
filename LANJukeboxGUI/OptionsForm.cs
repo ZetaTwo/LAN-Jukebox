@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+using LANJukebox;
 
-namespace LANJukebox
+namespace LANJukeboxGUI
 {
     public partial class OptionsForm : Form
     {
@@ -17,9 +12,9 @@ namespace LANJukebox
             get { return (AudioDevice)comboBoxDevices.SelectedItem; }
         }
 
-        internal int HistorySize
+        internal uint HistorySize
         {
-            get { return (int)numericUpDownHistorySize.Value; }
+            get { return (uint)numericUpDownHistorySize.Value; }
         }
 
         public OptionsForm(LANPlayer _parent)
@@ -29,8 +24,8 @@ namespace LANJukebox
             InitializeComponent();
 
             //Populate devices
-            AudioDevice[] devices = parent.Player.GetDevices();
-            AudioDevice current_device = parent.Player.CurrentDevice;
+            AudioDevice[] devices = parent.Player.Audio.GetDevices();
+            AudioDevice current_device = parent.Player.Audio.CurrentDevice;
             foreach (AudioDevice device in devices)
             {
                 comboBoxDevices.Items.Add(device);
@@ -41,7 +36,7 @@ namespace LANJukebox
             }
 
             //Set history size
-            numericUpDownHistorySize.Value = parent.HistorySize;
+            numericUpDownHistorySize.Value = parent.Player.HistorySize;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -52,6 +47,11 @@ namespace LANJukebox
         private void buttonApply_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+        }
+
+        private void buttonLastFm_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace LANJukebox
+﻿namespace LANJukeboxGUI
 {
     partial class OptionsForm
     {
@@ -30,12 +30,15 @@
         {
             System.Windows.Forms.Label label1;
             System.Windows.Forms.Label labelHistorySize;
+            System.Windows.Forms.Label labelLastFm;
             this.comboBoxDevices = new System.Windows.Forms.ComboBox();
             this.buttonApply = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.numericUpDownHistorySize = new System.Windows.Forms.NumericUpDown();
+            this.buttonLastFm = new System.Windows.Forms.Button();
             label1 = new System.Windows.Forms.Label();
             labelHistorySize = new System.Windows.Forms.Label();
+            labelLastFm = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHistorySize)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,6 +51,15 @@
             label1.TabIndex = 1;
             label1.Text = "Audio device";
             // 
+            // labelHistorySize
+            // 
+            labelHistorySize.AutoSize = true;
+            labelHistorySize.Location = new System.Drawing.Point(12, 44);
+            labelHistorySize.Name = "labelHistorySize";
+            labelHistorySize.Size = new System.Drawing.Size(62, 13);
+            labelHistorySize.TabIndex = 5;
+            labelHistorySize.Text = "History Size";
+            // 
             // comboBoxDevices
             // 
             this.comboBoxDevices.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -59,7 +71,7 @@
             // 
             // buttonApply
             // 
-            this.buttonApply.Location = new System.Drawing.Point(378, 93);
+            this.buttonApply.Location = new System.Drawing.Point(378, 151);
             this.buttonApply.Name = "buttonApply";
             this.buttonApply.Size = new System.Drawing.Size(75, 23);
             this.buttonApply.TabIndex = 3;
@@ -69,22 +81,13 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(297, 93);
+            this.buttonCancel.Location = new System.Drawing.Point(297, 151);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 4;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
-            // 
-            // labelHistorySize
-            // 
-            labelHistorySize.AutoSize = true;
-            labelHistorySize.Location = new System.Drawing.Point(12, 44);
-            labelHistorySize.Name = "labelHistorySize";
-            labelHistorySize.Size = new System.Drawing.Size(62, 13);
-            labelHistorySize.TabIndex = 5;
-            labelHistorySize.Text = "History Size";
             // 
             // numericUpDownHistorySize
             // 
@@ -93,11 +96,33 @@
             this.numericUpDownHistorySize.Size = new System.Drawing.Size(120, 20);
             this.numericUpDownHistorySize.TabIndex = 6;
             // 
+            // labelLastFm
+            // 
+            labelLastFm.AutoSize = true;
+            labelLastFm.Location = new System.Drawing.Point(12, 73);
+            labelLastFm.Name = "labelLastFm";
+            labelLastFm.Size = new System.Drawing.Size(41, 13);
+            labelLastFm.TabIndex = 7;
+            labelLastFm.Text = "Last.fm";
+            // 
+            // buttonLastFm
+            // 
+            this.buttonLastFm.Enabled = false;
+            this.buttonLastFm.Location = new System.Drawing.Point(87, 68);
+            this.buttonLastFm.Name = "buttonLastFm";
+            this.buttonLastFm.Size = new System.Drawing.Size(89, 23);
+            this.buttonLastFm.TabIndex = 8;
+            this.buttonLastFm.Text = "Authenticate";
+            this.buttonLastFm.UseVisualStyleBackColor = true;
+            this.buttonLastFm.Click += new System.EventHandler(this.buttonLastFm_Click);
+            // 
             // OptionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(465, 128);
+            this.ClientSize = new System.Drawing.Size(465, 186);
+            this.Controls.Add(this.buttonLastFm);
+            this.Controls.Add(labelLastFm);
             this.Controls.Add(this.numericUpDownHistorySize);
             this.Controls.Add(labelHistorySize);
             this.Controls.Add(this.buttonCancel);
@@ -106,7 +131,7 @@
             this.Controls.Add(label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "OptionsForm";
-            this.Text = "OptionsForm";
+            this.Text = "Options";
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownHistorySize)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -119,5 +144,6 @@
         private System.Windows.Forms.Button buttonApply;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.NumericUpDown numericUpDownHistorySize;
+        private System.Windows.Forms.Button buttonLastFm;
     }
 }
