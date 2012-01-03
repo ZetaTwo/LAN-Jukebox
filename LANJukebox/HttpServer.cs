@@ -11,15 +11,17 @@ namespace LANJukebox
 {
     delegate void FileUploaded(TempFile file);
 
+    /// <summary>
+    /// Serves an interface for uploadning tracks
+    /// </summary>
     class HttpServer
     {
         private HttpListener listener = new HttpListener();
         public event FileUploaded NewSong;
 
-        public HttpServer()
-        {
-        }
-
+        /// <summary>
+        /// Starts the web server
+        /// </summary>
         public void Start()
         {
             listener.Prefixes.Add("http://*:3000/");
@@ -28,6 +30,10 @@ namespace LANJukebox
             listener.BeginGetContext(new AsyncCallback(ListenerCallback), null);
         }
 
+        /// <summary>
+        /// Accepts an incoming connection and serves the appropriate content
+        /// </summary>
+        /// <param name="result">The handle used to get the HttpListenerContext object associated with the connection.</param>
         public void ListenerCallback(IAsyncResult result)
         {
             HttpListenerContext context = listener.EndGetContext(result);
@@ -68,6 +74,10 @@ namespace LANJukebox
         }
 
         //TODO: Display current playlist
+        /// <summary>
+        /// Displays the index page with an upload form.
+        /// </summary>
+        /// <param name="context">The current connection context</param>
         private void ActionIndex(HttpListenerContext context)
         {
             /*context.Response.ContentType = "text/html";
@@ -98,6 +108,10 @@ namespace LANJukebox
             ServeFile(context, "Web/template/index.html");
         }
 
+        /// <summary>
+        /// Uploads a file to the server
+        /// </summary>
+        /// <param name="context">The current connection context</param>
         private void ActionSubmit(HttpListenerContext context)
         {
             if (context.Request.ContentLength64 < 1000000000)
@@ -124,6 +138,11 @@ namespace LANJukebox
             }
         }
 
+        /// <summary>
+        /// Serve a static embedded file.
+        /// </summary>
+        /// <param name="context">The current connection context</param>
+        /// <param name="filePath">The path to the file.</param>
         private void ServeFile(HttpListenerContext context, string filePath)
         {
             string resource = "LANJukebox." + filePath.Replace('/', '.');
@@ -161,6 +180,11 @@ namespace LANJukebox
             return buffer.Length;
         }
 
+        /// <summary>
+        /// Returns the content type from a given file extension
+        /// </summary>
+        /// <param name="extension">The file extension</param>
+        /// <returns>The content type associated with the file extension</returns>
         private static string GetContentType(string extension)
         {
             switch (extension)
@@ -175,11 +199,23 @@ namespace LANJukebox
             }
         }
 
+        /// <summary>
+        /// Returns the post data boundary.
+        /// </summary>
+        /// <param name="ctype">The ctype string</param>
+        /// <returns>The post data boundary</returns>
         private static String GetBoundary(String ctype)
         {
             return "--" + ctype.Split(';')[1].Split('=')[1];
         }
 
+        /// <summary>
+        /// Save the uploaded file to disk
+        /// </summary>
+        /// <param name="enc">The file encoding</param>
+        /// <param name="boundary">The post data boundary</param>
+        /// <param name="input">The uploaded data</param>
+        /// <param name="fileName">The file to save to</param>
         private static void SaveFile(Encoding enc, String boundary, Stream input, string fileName)
         {
             Byte[] boundaryBytes = enc.GetBytes(boundary);
@@ -273,6 +309,13 @@ namespace LANJukebox
             }
         }
 
+        /// <summary>
+        /// Finds the index of a given boundary within a buffer
+        /// </summary>
+        /// <param name="buffer">The buffer to search</param>
+        /// <param name="len">The length of the buffer</param>
+        /// <param name="boundaryBytes">The boundary to look for</param>
+        /// <returns></returns>
         private static Int32 IndexOf(Byte[] buffer, Int32 len, Byte[] boundaryBytes)
         {
             for (Int32 i = 0; i <= len - boundaryBytes.Length; i++)

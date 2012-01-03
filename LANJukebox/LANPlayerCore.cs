@@ -121,7 +121,7 @@ namespace LANJukebox
 
             currentTrack = track;
 
-            Audio.LoadSong(currentTrack);
+            Audio.LoadTrack(currentTrack);
             Audio.PlayPause();
 
             while (Playlist.IndexOf(currentTrack) >= HistorySize)
@@ -205,10 +205,13 @@ namespace LANJukebox
 
         private void TrackScrobble(Track track)
         {
-            scrobbler.Scrobble(currentScrobble);
+            if (scrobbler != null)
+            {
+                scrobbler.Scrobble(currentScrobble);
 
-            Thread process = new Thread(ScrobbleProcess);
-            process.Start();
+                Thread process = new Thread(ScrobbleProcess);
+                process.Start();
+            }
         }
 
         private void ScrobbleProcess()

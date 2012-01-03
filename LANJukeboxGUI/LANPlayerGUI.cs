@@ -14,7 +14,9 @@ namespace LANJukeboxGUI
             get { return player; }
         }
 
+#if !DEBUG
         IAnalyticsMonitor monitor;
+#endif
 
         public LANPlayer()
         {
@@ -63,12 +65,12 @@ namespace LANJukeboxGUI
 
         #region Track
 
-        delegate void AddTrackHandler(Track track);
+        delegate void TrackHandler(Track track);
         private void AddTrack(Track track)
         {
             if (listViewTracks.InvokeRequired)
             {
-                Invoke(new AddTrackHandler(AddTrack), track);
+                Invoke(new TrackHandler(AddTrack), track);
                 return;
             }
 
@@ -103,6 +105,12 @@ namespace LANJukeboxGUI
 
         private void PlayTrack(Track track)
         {
+            if (listViewTracks.InvokeRequired)
+            {
+                Invoke(new TrackHandler(PlayTrack), track);
+                return;
+            }
+
             foreach (ListViewItem trackItem in listViewTracks.Items)
             {
                 if(trackItem.Tag == track)

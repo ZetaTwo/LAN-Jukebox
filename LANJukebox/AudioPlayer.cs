@@ -4,25 +4,44 @@ using Un4seen.Bass;
 
 namespace LANJukebox
 {
+    /// <summary>
+    /// Class responsible for loading and playing audio tracks
+    /// </summary>
     public class AudioPlayer
     {
         int currentHandle = 0;
-        Track currentSong = null;
+        Track currentTrack = null;
         bool playing = false;
+        /// <summary>
+        /// Gets the playing status of the player.
+        /// </summary>
         public bool Playing
         {
             get { return playing; }
         }
 
+        /// <summary>
+        /// Gets or sets the volume level (0-100).
+        /// </summary>
         public int Volume
         {
             get { return (int)(100 * Bass.BASS_GetVolume()); }
             set { Bass.BASS_SetVolume((float)value / 100); }
         }
 
+        /// <summary>
+        /// This event is fired when the current track ends.
+        /// </summary>
         public event TrackEvent TrackEnd;
+
+        /// <summary>
+        /// This event is fired when the current has played halfway and should be scrobbled.
+        /// </summary>
         public event TrackEvent TrackScrobble;
 
+        /// <summary>
+        /// Gets or sets the current audio device
+        /// </summary>
         public AudioDevice CurrentDevice
         {
             get
@@ -34,6 +53,9 @@ namespace LANJukebox
             set { DeviceIndex = value.Id; }
         }
 
+        /// <summary>
+        /// Gets or sets the index of the current audio device
+        /// </summary>
         public int DeviceIndex
         {
             get { return Bass.BASS_GetDevice(); }
@@ -45,20 +67,23 @@ namespace LANJukebox
                     Bass.BASS_Init(value, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero);
                 }
 
-                if (currentSong != null)
+                if (currentTrack != null)
                 {
                     PlayPause();
                 }
 
                 bool result = Bass.BASS_SetDevice(value);
 
-                if (currentSong != null)
+                if (currentTrack != null)
                 {
                     PlayPause();
                 }
             }
         }
 
+        /// <summary>
+        /// Instantiate an AudioPlayer and initializes the default audio device.
+        /// </summary>
         public AudioPlayer()
         {
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero);
@@ -70,13 +95,20 @@ namespace LANJukebox
             Bass.BASS_Free();
         }
 
-        public void LoadSong(Track song)
+        /// <summary>
+        /// Loads a track as the current track.
+        /// </summary>
+        /// <param name="track"></param>
+        public void LoadTrack(Track track)
         {
             Stop();
-            currentSong = song;
+            currentTrack = track;
             
         }
 
+        /// <summary>
+        /// Stops playback of the current tracks and unloads the audio data.
+        /// </summary>
         public void Stop()
         {
             if (playing)
@@ -92,16 +124,10 @@ namespace LANJukebox
             }
         }
 
-        public void EndTrackProc(int arg1, int arg2, int arg3, IntPtr arg4)
-        {
-            TrackEnd(currentSong);
-        }
-
-        public void ScrobbleTrackProc(int arg1, int arg2, int arg3, IntPtr arg4)
-        {
-            TrackScrobble(currentSong);
-        }
-
+        /// <summary>
+        /// Get all audio devices available on the computer.
+        /// </summary>
+        /// <returns>An array of audio devices on the computer</returns>
         public AudioDevice[] GetDevices()
         {
             BASS_DEVICEINFO[] devices = Bass.BASS_GetDeviceInfos();
@@ -117,9 +143,12 @@ namespace LANJukebox
             return retval.ToArray();
         }
 
+        /// <summary>
+        /// Starts, pauses or resumes playback of the current song
+        /// </summary>
         public void PlayPause()
         {
-            if (currentSong == null)
+            if (currentTrack == null)
             {
                 throw new Exception("No song loaded.");
             }
@@ -133,7 +162,7 @@ namespace LANJukebox
             {
                 if (currentHandle == 0)
                 {
-                    currentHandle = Bass.BASS_StreamCreateFile(currentSong.Tags.filename, 0, 0, BASSFlag.BASS_DEFAULT);
+                    currentHandle = Bass.BASS_StreamCreateFile(currentTrack.Tags.filename, 0, 0, BASSFlag.BASS_DEFAULT);
                     Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_END, 0, EndTrackProc, IntPtr.Zero);
                     
                     long scrobblePos = Bass.BASS_ChannelGetLength(currentHandle) / 2;
@@ -142,6 +171,16 @@ namespace LANJukebox
                 Bass.BASS_ChannelPlay(currentHandle, false);
                 playing = true;
             }
+        }
+
+        private void EndTrackProc(int arg1, int arg2, int arg3, IntPtr arg4)
+        {
+            TrackEnd(currentTrack);
+        }
+
+        private void ScrobbleTrackProc(int arg1, int arg2, int arg3, IntPtr arg4)
+        {
+            TrackScrobble(currentTrack);
         }
     }
 }

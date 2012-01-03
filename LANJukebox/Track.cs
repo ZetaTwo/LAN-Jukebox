@@ -5,6 +5,9 @@ namespace LANJukebox
     public class Track
     {
         TAG_INFO tags;
+        /// <summary>
+        /// A set of ID3 tags for the track.
+        /// </summary>
         public TAG_INFO Tags
         {
             get { return tags; }
