@@ -24,7 +24,7 @@ namespace LANJukebox
         List<Track> Playlist = new List<Track>();
         Track currentTrack;
 
-        HttpServer server = new HttpServer();
+        JukeboxServer server = new JukeboxServer();
 
         Lpfm.LastFmScrobbler.Scrobbler auth;
         Lpfm.LastFmScrobbler.QueuingScrobbler scrobbler;
@@ -217,7 +217,13 @@ namespace LANJukebox
         private void ScrobbleProcess()
         {
 #if DEBUG
-            scrobbler.Process(true);
+            try
+            {
+                scrobbler.Process(true);
+            }
+            catch
+            {
+            }
 #else
             scrobbler.Process();
 #endif

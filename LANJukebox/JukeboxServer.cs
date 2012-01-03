@@ -14,16 +14,24 @@ namespace LANJukebox
     /// <summary>
     /// Serves an interface for uploadning tracks
     /// </summary>
-    class HttpServer
+    class JukeboxServer
     {
         private HttpListener listener = new HttpListener();
         public event FileUploaded NewSong;
+
 
         /// <summary>
         /// Starts the web server
         /// </summary>
         public void Start()
         {
+            /*HttpServer.HttpModules.ResourceFileModule module = new HttpServer.HttpModules.ResourceFileModule();
+            module.AddResources("/123", Assembly.GetExecutingAssembly(), "LANJukebox." + "Web.template.index.html");
+            HttpServer.HttpServer serv = new HttpServer.HttpServer();
+            serv.Add(module);
+            serv.ServerName = "LAN Jukebox";
+            serv.Start(IPAddress.Any, 3000);*/
+            
             listener.Prefixes.Add("http://*:3000/");
 
             listener.Start();

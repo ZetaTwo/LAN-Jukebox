@@ -33,11 +33,13 @@ namespace LANJukebox
         /// This event is fired when the current track ends.
         /// </summary>
         public event TrackEvent TrackEnd;
+        SYNCPROC EndTrackDelegate;
 
         /// <summary>
         /// This event is fired when the current has played halfway and should be scrobbled.
         /// </summary>
         public event TrackEvent TrackScrobble;
+        SYNCPROC ScrobbleTrackDelegate;
 
         /// <summary>
         /// Gets or sets the current audio device
@@ -86,6 +88,9 @@ namespace LANJukebox
         /// </summary>
         public AudioPlayer()
         {
+            EndTrackDelegate = new SYNCPROC(EndTrackProc);
+            ScrobbleTrackDelegate = new SYNCPROC(ScrobbleTrackProc);
+
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero);
         }
 
@@ -163,10 +168,10 @@ namespace LANJukebox
                 if (currentHandle == 0)
                 {
                     currentHandle = Bass.BASS_StreamCreateFile(currentTrack.Tags.filename, 0, 0, BASSFlag.BASS_DEFAULT);
-                    Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_END, 0, EndTrackProc, IntPtr.Zero);
+                    Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_END, 0,  EndTrackDelegate, IntPtr.Zero);
                     
                     long scrobblePos = Bass.BASS_ChannelGetLength(currentHandle) / 2;
-                    Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_POS, scrobblePos, ScrobbleTrackProc, IntPtr.Zero);
+                    Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_POS, scrobblePos, ScrobbleTrackDelegate, IntPtr.Zero);
                 }
                 Bass.BASS_ChannelPlay(currentHandle, false);
                 playing = true;

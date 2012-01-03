@@ -36,6 +36,9 @@
     <Reference Include="Bass.Net">
       <HintPath>..\..\..\..\dependencies\bass\Bass.Net.dll</HintPath>
     </Reference>
+    <Reference Include="HttpServer">
+      <HintPath>..\..\..\..\dependencies\HttpServer\HttpServer.dll</HintPath>
+    </Reference>
     <Reference Include="Lpfm.LastFmScrobbler">
       <HintPath>..\..\..\..\dependencies\Lpfm.LastFmScrobbler.dll\Lpfm.LastFmScrobbler.dll</HintPath>
     </Reference>
@@ -45,7 +48,7 @@
   <ItemGroup>
     <Compile Include="AudioDevice.cs" />
     <Compile Include="AudioPlayer.cs" />
-    <Compile Include="HttpServer.cs" />
+    <Compile Include="JukeboxServer.cs" />
     <Compile Include="LANPlayerCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TempFile.cs" />
