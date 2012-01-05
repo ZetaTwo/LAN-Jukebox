@@ -90,12 +90,6 @@ namespace LANJukeboxGUI
             //Add to list
             listViewTracks.Items.Add(trackItem);
 
-            //If this was the first one
-            if (listViewTracks.Items.Count == 1)
-            {
-                Player.Next();
-            }
-
             //If there are more tracks
             if (listViewTracks.Items.Count > 1)
             {
@@ -140,6 +134,12 @@ namespace LANJukeboxGUI
 
         private void DeleteTrackHistory(Track track)
         {
+            if (listViewTracks.InvokeRequired)
+            {
+                Invoke(new TrackHandler(DeleteTrackHistory), track);
+                return;
+            }
+
             foreach (ListViewItem trackItem in listViewTracks.Items)
             {
                 if (trackItem.Tag == track)

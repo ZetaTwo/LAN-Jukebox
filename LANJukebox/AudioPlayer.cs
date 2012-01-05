@@ -9,6 +9,8 @@ namespace LANJukebox
     /// </summary>
     public class AudioPlayer
     {
+        int pluginFlac;
+        int pluginAac;
         int currentHandle = 0;
         Track currentTrack = null;
         bool playing = false;
@@ -41,6 +43,7 @@ namespace LANJukebox
         public event TrackEvent TrackScrobble;
         SYNCPROC ScrobbleTrackDelegate;
 
+        int currentDevice = -1;
         /// <summary>
         /// Gets or sets the current audio device
         /// </summary>
@@ -60,24 +63,20 @@ namespace LANJukebox
         /// </summary>
         public int DeviceIndex
         {
-            get { return Bass.BASS_GetDevice(); }
+            get { return currentDevice; }
             set
             {
-                BASS_DEVICEINFO device = Bass.BASS_GetDeviceInfo(value);
+                currentDevice = value;
+                BASS_DEVICEINFO device = Bass.BASS_GetDeviceInfo(currentDevice);
                 if (device.IsEnabled && !device.IsInitialized)
                 {
-                    Bass.BASS_Init(value, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero);
+                    Bass.BASS_Init(currentDevice, 44100, BASSInit.BASS_DEVICE_DEFAULT, System.IntPtr.Zero);
                 }
 
                 if (currentTrack != null)
                 {
                     PlayPause();
-                }
-
-                bool result = Bass.BASS_SetDevice(value);
-
-                if (currentTrack != null)
-                {
+                    Bass.BASS_ChannelSetDevice(currentHandle, currentDevice);
                     PlayPause();
                 }
             }
@@ -88,6 +87,9 @@ namespace LANJukebox
         /// </summary>
         public AudioPlayer()
         {
+            pluginFlac = Bass.BASS_PluginLoad("bassflac.dll");
+            pluginAac = Bass.BASS_PluginLoad("bass_aac.dll");
+
             EndTrackDelegate = new SYNCPROC(EndTrackProc);
             ScrobbleTrackDelegate = new SYNCPROC(ScrobbleTrackProc);
 
@@ -97,6 +99,8 @@ namespace LANJukebox
         ~AudioPlayer()
         {
             Stop();
+            Bass.BASS_PluginFree(pluginFlac);
+            Bass.BASS_PluginFree(pluginAac);
             Bass.BASS_Free();
         }
 
@@ -107,8 +111,7 @@ namespace LANJukebox
         public void LoadTrack(Track track)
         {
             Stop();
-            currentTrack = track;
-            
+            currentTrack = track; 
         }
 
         /// <summary>
@@ -168,6 +171,7 @@ namespace LANJukebox
                 if (currentHandle == 0)
                 {
                     currentHandle = Bass.BASS_StreamCreateFile(currentTrack.Tags.filename, 0, 0, BASSFlag.BASS_DEFAULT);
+                    Bass.BASS_ChannelSetDevice(currentHandle, currentDevice);
                     Bass.BASS_ChannelSetSync(currentHandle, BASSSync.BASS_SYNC_END, 0,  EndTrackDelegate, IntPtr.Zero);
                     
                     long scrobblePos = Bass.BASS_ChannelGetLength(currentHandle) / 2;

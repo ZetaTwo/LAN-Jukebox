@@ -99,6 +99,11 @@ namespace LANJukebox
                 Playlist.Add(track);
 
                 TrackAdd(track);
+
+                if (!Audio.Playing)
+                {
+                    Next();
+                }
             }
         }
 
