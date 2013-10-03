@@ -45,9 +45,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Bass.Net\Bass.Net.dll</HintPath>
     </Reference>
-    <Reference Include="EQATEC.Analytics.MonitorWinForm, Version=2.0.240.0, Culture=neutral, PublicKeyToken=213c7c68adb58a17, processorArchitecture=MSIL">
+    <Reference Include="Lpfm.LastFmScrobbler, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\EQATEC\EQATEC.Analytics.MonitorWinForm.dll</HintPath>
+      <HintPath>..\packages\Lpfm.LastFmScrobbler.dll.1.3.0\lib\net40\Lpfm.LastFmScrobbler.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -90,6 +90,7 @@
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

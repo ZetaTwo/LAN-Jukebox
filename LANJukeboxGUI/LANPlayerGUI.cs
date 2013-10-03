@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using LANJukebox;
 using System.Drawing;
-using EQATEC.Analytics.Monitor;
 
 namespace LANJukeboxGUI
 {
@@ -14,20 +13,9 @@ namespace LANJukeboxGUI
             get { return player; }
         }
 
-#if !DEBUG
-        IAnalyticsMonitor monitor;
-#endif
-
         public LANPlayer()
         {
             InitializeComponent();
-
-#if !DEBUG
-            monitor = AnalyticsMonitorFactory.Create("3C33D1DC98B34193B7B7C99E484C4583");
-            AppDomain.CurrentDomain.UnhandledException += (s, exep) =>
-                monitor.TrackException(exep.ExceptionObject as Exception);
-            monitor.Start();
-#endif
 
             string lastFmSession = Properties.Settings.Default.LastFmSession;
             if (!string.IsNullOrWhiteSpace(lastFmSession))
@@ -292,9 +280,6 @@ namespace LANJukeboxGUI
         private void LANPlayer_FormClosing(object sender, FormClosingEventArgs e)
         {
             Player.Audio.Stop();
-#if !DEBUG
-            monitor.Stop();
-#endif
         }
     }
 }
